@@ -22,7 +22,7 @@ const login = async (req, res, next) => {
     // Compare provided password with hashed password
     const isValidPassword = await bcrypt.compare(
       req.body.password,
-      user.password
+      user.password,
     );
     if (!isValidPassword) {
       // Password does not match
@@ -45,10 +45,17 @@ const login = async (req, res, next) => {
     });
 
     // Set JWT as cookie
+    // res.cookie(process.env.COOKIE_NAME, token, {
+    //   maxAge: process.env.JWT_EXPIRY,
+    //   httpOnly: true,
+    //   signed: true,
+    // });
+
     res.cookie(process.env.COOKIE_NAME, token, {
-      maxAge: process.env.JWT_EXPIRY,
       httpOnly: true,
       signed: true,
+      secure: true,
+      sameSite: "None",
     });
 
     // Set logged in user as local identifier
@@ -73,7 +80,7 @@ const login = async (req, res, next) => {
       userid: user._id,
       username: user.name,
       email: user.email,
-      profile:user?.profile,
+      profile: user?.profile,
       role: user.role,
       statusbar: "Success",
     });
@@ -84,10 +91,9 @@ const login = async (req, res, next) => {
   }
 };
 const logout = async (req, res) => {
-  console.log("Response logged out",res);
+  console.log("Response logged out", res);
   res.clearCookie(process.env.COOKIE_NAME);
   res.send("logged Out Successfully");
-  
 };
 
 const getUserActivity = async (req, res, next) => {

@@ -17,7 +17,8 @@ const upload = require("../middleware/uploadMiddleware");
 
 // get User API ....
 router.get("/", getAllData);
-router.post("/add",addControlPanel);
-router.put("/update/:id",updateControlPanel);
+router.post("/add", addControlPanel);
+router.put("/update/:id", updateControlPanel);
 router.delete("/delete/:id", deleteControlPanel);
+
 module.exports = router;

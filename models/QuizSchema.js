@@ -32,7 +32,7 @@ const quizSchema = new mongoose.Schema(
       required: [true, "Please provide Quiz Description"],
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Quiz = mongoose.model("quiz", quizSchema);
