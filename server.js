@@ -19,6 +19,7 @@ const {
 const userStrategy = require("./strategy/user.strategy");
 
 // Routes Data import ....
+const faq = require("./routes/faqRoute");
 const home = require("./routes/homeRoute");
 const auth = require("./routes/loginRoute");
 const users = require("./routes/usersRoute");
@@ -64,6 +65,7 @@ app.use(
 // Routing Setup .........
 app.use("/", home);
 app.use("/api", auth);
+app.use("/api/faq", faq);
 app.use("/api/users", users);
 app.use("/api/category", category);
 app.use("/api/slider", slider);

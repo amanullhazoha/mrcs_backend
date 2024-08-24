@@ -2,36 +2,26 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  getCategory,
-  addCategory,
-  updateCategory,
-  deleteCategory,
-  getSingleCategory,
-} = require("../controller/categoryController");
-const {
-  categoryValidator,
-  categoryValidationHandler,
-} = require("../middleware/category/categoryValidator");
+  getFaq,
+  addFaq,
+  updateFaq,
+  deleteFaq,
+  getSingleFaq,
+} = require("../controller/faqController");
 const upload = require("../middleware/uploadMiddleware");
 
-router.get("/", getCategory);
+router.get("/", getFaq);
 
-// get by Single Category
-router.get("/:id", getSingleCategory);
+// get by Single faq
+router.get("/:id", getSingleFaq);
 
-// post Category
-router.post(
-  "/add",
-  upload,
-  categoryValidator,
-  categoryValidationHandler,
-  addCategory,
-);
+// post faq
+router.post("/add", upload, addFaq);
 
-// delete Category
-router.delete("/delete/:id", deleteCategory);
+// delete faq
+router.delete("/delete/:id", deleteFaq);
 
-// update Category
-router.put("/update/:id", upload, updateCategory);
+// update faq
+router.put("/update/:id", upload, updateFaq);
 
 module.exports = router;
