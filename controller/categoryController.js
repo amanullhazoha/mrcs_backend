@@ -2,7 +2,7 @@ const Category = require("../models/CategorySchema");
 const cloudinary = require("cloudinary").v2;
 const upload = require("../middleware/uploadMiddleware");
 
-// get All Category Api
+// get
 const getCategory = async (req, res, next) => {
   try {
     const category = await Category.find().sort({ updatedAt: -1 }).exec();
