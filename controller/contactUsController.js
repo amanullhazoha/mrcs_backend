@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const contactUs = async (req, res) => {
-  const { email, full_name, message, phone } = req.body;
+  const { email, full_name, message, phone, subject } = req.body;
 
   try {
     const mailOptions = {
@@ -22,6 +22,7 @@ const contactUs = async (req, res) => {
         <h1>Name: ${full_name}</h1>
         <h1>Email: ${email}</h1>
         <h1>Phone: ${phone}</h1>
+        <p>Subject: ${subject}</p>
         <p>Message: ${message}</p>
       </div>`,
     };
@@ -29,10 +30,10 @@ const contactUs = async (req, res) => {
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.log(error);
-        res.status(500).send("Failed to send reset email");
+        res.status(500).send("Failed to send contact message");
       } else {
         console.log("Email sent : " + info.response);
-        res.status(200).send(`Password reset email sent ${info.response}`);
+        res.status(200).send(`Contact message send ${info.response}`);
       }
     });
   } catch (err) {

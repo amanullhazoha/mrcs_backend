@@ -3,7 +3,7 @@ const FAQ = require("../models/FAQSchema");
 // get All faq Api
 const getFaq = async (req, res, next) => {
   try {
-    const faq = await FAQ.find().sort({ updatedAt: -1 }).exec();
+    const [faq] = await FAQ.find().sort({ updatedAt: -1 }).exec();
     res.json(faq);
   } catch (err) {
     return res.status(500).json({
@@ -44,7 +44,7 @@ const addFaq = async (req, res) => {
     });
 
     await newFaq.save();
-    res.status(200).json({ success: true, data: newFaq });
+    res.status(201).json({ success: true, data: newFaq });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -68,7 +68,7 @@ const updateFaq = async (req, res, next) => {
 
     await faq.save();
 
-    res.json({ success: true, data: faq });
+    res.status(200).json({ success: true, data: faq });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
