@@ -19,7 +19,7 @@ router.get("/show", getShowReview);
 router.get("/:id", getSingleReview);
 
 // post faq
-router.post("/add", upload, addReview);
+router.post("/add", addReview);
 
 // delete faq
 router.delete("/delete/:id", deleteReview);
