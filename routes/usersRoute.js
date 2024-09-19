@@ -1,15 +1,11 @@
-// external imports
 const express = require("express");
-const { check } = require("express-validator");
-const mongoose = require("mongoose");
-
-// internel imports
 const {
   getUsers,
   getSingleUser,
   addUser,
   updateUser,
   deleteUser,
+  getLoginUserProfile
 } = require("../controller/usersController");
 const upload = require("../middleware/uploadMiddleware");
 const Authenticate = require("../middleware/users/authenticate");
@@ -25,7 +21,10 @@ const router = express.Router();
 router.get("/", getUsers);
 
 //get Single User Api ...
+router.get("/profile", Authenticate, getLoginUserProfile);
+
 router.get("/:id", getSingleUser);
+
 
 // add User API ......
 router.post(

@@ -33,10 +33,11 @@ const login = async (req, res, next) => {
 
     // Prepare payload for JWT
     const payload = {
+      id: user.id,
+      role: user.role,
+      email: user.email,
       username: user.name,
       mobile: user.mobile,
-      email: user.email,
-      role: user.role,
     };
 
     // Generate JWT
@@ -52,10 +53,10 @@ const login = async (req, res, next) => {
     // });
 
     res.cookie(process.env.COOKIE_NAME, token, {
-      httpOnly: true,
-      signed: true,
-      secure: true,
-      sameSite: "None",
+      httpOnly: true, // Prevent client-side access to the cookie
+      signed: true, // Use signed cookies for security
+      secure: false, // Disable secure for local development, enable for production with HTTPS
+      sameSite: 'Lax',
     });
 
     // Set logged in user as local identifier
@@ -90,6 +91,7 @@ const login = async (req, res, next) => {
     });
   }
 };
+
 const logout = async (req, res) => {
   console.log("Response logged out", res);
   res.clearCookie(process.env.COOKIE_NAME);

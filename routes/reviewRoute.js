@@ -1,6 +1,6 @@
 const express = require("express");
-const router = express.Router();
-
+const upload = require("../middleware/uploadMiddleware");
+const Authenticate = require("../middleware/users/authenticate");
 const {
   getReview,
   addReview,
@@ -8,23 +8,20 @@ const {
   deleteReview,
   getShowReview,
   getSingleReview,
+  getLoggedInUserReview
 } = require("../controller/reviewController");
-const upload = require("../middleware/uploadMiddleware");
 
-router.get("/", getReview);
+const router = express.Router();
 
-router.get("/show", getShowReview);
+router.get("/", Authenticate, getReview);
 
-// get by Single faq
-router.get("/:id", getSingleReview);
+router.get("/show", Authenticate, getShowReview);
+router.get("/logged-in-user", Authenticate, getLoggedInUserReview);
+router.get("/:id", Authenticate, getSingleReview);
 
-// post faq
-router.post("/add", addReview);
+router.post("/add", Authenticate, addReview);
+router.put("/update/:id", Authenticate, upload, updateReview);
 
-// delete faq
-router.delete("/delete/:id", deleteReview);
-
-// update faq
-router.put("/update/:id", upload, updateReview);
+router.delete("/delete/:id", Authenticate, deleteReview);
 
 module.exports = router;

@@ -11,8 +11,6 @@ module.exports = () => {
       token = req.signedCookies[process.env.COOKIE_NAME];
     }
 
-    console.log(req.signedCookies, "hi");
-
     return token;
   };
 
@@ -27,7 +25,7 @@ module.exports = () => {
         console.log(payload, "jwt");
 
         User.findOne({ email: payload.email }).then((user) => {
-          if (user) return done(null, user);
+          if (user) return done(null, payload);
 
           return done(null, false);
         });

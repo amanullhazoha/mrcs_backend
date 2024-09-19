@@ -41,6 +41,7 @@ const contactUs = require("./routes/contactUsRoute")
 //config .......
 const app = express();
 const corsOptions = {
+  origin: ['http://localhost:3000', 'http://localhost:5174'], 
   credentials: true,
 };
 app.use(cors(corsOptions));

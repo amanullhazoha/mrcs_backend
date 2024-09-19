@@ -40,9 +40,25 @@ const getSingleUser = async (req, res, next) => {
   }
 };
 
+const getLoginUserProfile = async (req, res, next) => {
+  try {
+    const id = req?.user?.id
+    const user = await User.findById(id);
+
+    res.json(user);
+  } catch (err) {
+    return res.status(500).json({
+      errors: {
+        common: {
+          msg: `Unknown error occured ! ${err}`,
+        },
+      },
+    });
+  }
+};
+
 // Add User Api Controller
 async function addUser(req, res, next) {
-  // save user or send error
   try {
     let newUser;
     const hashPassword = await bcrypt.hash(req.body.password, 6);
@@ -191,4 +207,5 @@ module.exports = {
   addUser,
   updateUser,
   deleteUser,
+  getLoginUserProfile
 };

@@ -4,6 +4,7 @@ const Review = require("../models/ReviewSchema");
 const getReview = async (req, res, next) => {
   try {
     const review = await Review.find().sort({ updatedAt: -1 }).exec();
+
     res.json(review);
   } catch (err) {
     return res.status(500).json({
@@ -30,7 +31,7 @@ const getShowReview = async (req, res, next) => {
         },
       });
     }
-  };
+};
 
 //get Single Package Api
 const getSingleReview = async (req, res, next) => {
@@ -48,13 +49,32 @@ const getSingleReview = async (req, res, next) => {
   }
 };
 
+const getLoggedInUserReview = async (req, res, next) => {
+  try {
+    const userId = req?.user?.id;
+    const review = await Review.findOne({ userId });
+
+    res.json(review);
+  } catch (err) {
+    return res.status(500).json({
+      errors: {
+        common: {
+          msg: `Unknown error occured ! ${err}`,
+        },
+      },
+    });
+  }
+};
+
+
 // Add faq Api Controller
 const addReview = async (req, res) => {
   try {
     const { rating, review,  } = req.body;
-
-    // Create a new faq
+    const userId = req?.user?.id;
+    
     const newReview = new Review({
+      userId,
       rating,
       review,
     });
@@ -83,7 +103,7 @@ const updateReview = async (req, res, next) => {
     reviewData.review = review;
     reviewData.status = status;
 
-    await faq.save();
+    await reviewData.save();
 
     res.status(200).json({ success: true, data: reviewData });
   } catch (error) {
@@ -116,4 +136,5 @@ module.exports = {
     deleteReview,
     getShowReview,
     getSingleReview,
+    getLoggedInUserReview
 };
