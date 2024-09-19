@@ -22,7 +22,7 @@ router.put("/profile/update", Authenticate, loggedInUserProfileUpdate);
 
 router.get("/:id", Authenticate, Authorize("admin"), getSingleUser);
 
-router.post("/adduser", Authenticate, upload, addUserValidators, addUserValidationHandler, addUser);
+router.post("/adduser", upload, addUserValidators, addUserValidationHandler, addUser);
 
 router.put("/update/:id", Authenticate, Authorize("admin"), upload, updateUser);
 

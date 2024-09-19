@@ -46,6 +46,14 @@ const peopleSchema = mongoose.Schema(
     profile: {
       type: String,
     },
+    reviewed: {
+      type: Boolean,
+      default: false,
+    },
+    planExpiryDate: {
+      type: Date,
+      default: null,
+    },
     publicid: {
       type: String,
     },

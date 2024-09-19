@@ -72,7 +72,6 @@ async function loggedInUserProfileUpdate (req, res, next) {
     user.email = req.body.email || user.email;
     user.mobile = req.body.mobile || user.mobile;
     user.role = req.body.role || user.role;
-    user.usertype = req.body.usertype || user.usertype;
 
     // Check if the password is being updated
     if (req.body.password) {
@@ -200,6 +199,16 @@ async function updateUser(req, res, next) {
     user.email = req.body.email || user.email;
     user.mobile = req.body.mobile || user.mobile;
     user.role = req.body.role || user.role;
+    user.planExpiryDate = req.body.planExpiryDate || user.planExpiryDate;
+
+    if((req.body.usertype  === "paid") && (req.body.usertype !== user.usertype)) {
+      const now = new Date();
+
+      user.planExpiryDate = now.setDate(now.getDate() + 90);
+    } else if (req.body.usertype  === "unpaid") {
+      user.planExpiryDate = null;
+    }
+
     user.usertype = req.body.usertype || user.usertype;
 
     if (req.body.password) {

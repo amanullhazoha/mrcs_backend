@@ -5,33 +5,27 @@ const User = require("../models/People");
 const UserActivity = require("../models/UserActivitySchema");
 
 const login = async (req, res, next) => {
-  console.log(req);
   try {
-    // Find user by either email or mobile
     const user = await User.findOne({
       $or: [{ email: req.body.username }, { mobile: req.body.username }],
     });
 
     if (!user) {
-      // User not found
       return res.status(401).json({
         message: "Login failed! Username is invalid.",
       });
     }
 
-    // Compare provided password with hashed password
     const isValidPassword = await bcrypt.compare(
       req.body.password,
       user.password,
     );
     if (!isValidPassword) {
-      // Password does not match
       return res.status(401).json({
         message: "Login failed! Password is incorrect",
       });
     }
 
-    // Prepare payload for JWT
     const payload = {
       id: user.id,
       role: user.role,
@@ -53,20 +47,17 @@ const login = async (req, res, next) => {
     // });
 
     res.cookie(process.env.COOKIE_NAME, token, {
-      httpOnly: true, // Prevent client-side access to the cookie
-      signed: true, // Use signed cookies for security
-      secure: false, // Disable secure for local development, enable for production with HTTPS
+      httpOnly: true,
+      signed: true,
+      secure: false,
       sameSite: 'Lax',
     });
 
-    // Set logged in user as local identifier
     res.locals.loggedInUser = payload;
 
-    // Update user's last activity time
     const now = new Date();
     await User.findByIdAndUpdate(user._id, { lastActivity: now });
 
-    // Store user's activity in UserActivity collection
     const userActivity = new UserActivity({
       username: user.email,
       lastLoginTime: now,
@@ -74,7 +65,6 @@ const login = async (req, res, next) => {
     });
     await userActivity.save();
 
-    // Return success status
     return res.status(200).json({
       message: "Login successful!",
       token,
