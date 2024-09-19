@@ -1,14 +1,11 @@
-// external imports
 const express = require("express");
-const router = express.Router();
-
+const Authorize = require("../middleware/users/authorize");
+const Authenticate = require("../middleware/users/authenticate");
 const { getSubscription, updateSubscription } = require("../controller/subscriptionController");
 
+const router = express.Router();
 
-// get Subscription
 router.get("/", getSubscription);
-
-// update Subscription
-router.put("/update/:id", updateSubscription);
+router.put("/update/:id", Authenticate, Authorize("admin"), updateSubscription);
 
 module.exports = router;

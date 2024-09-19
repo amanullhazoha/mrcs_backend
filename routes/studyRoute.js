@@ -1,32 +1,15 @@
-// external imports
 const express = require("express");
+const upload = require("../middleware/uploadMiddleware");
+const Authorize = require("../middleware/users/authorize");
+const Authenticate = require("../middleware/users/authenticate");
+const { addStudy, updateStudy, getStudybyId, getAllStudyData, deleteStudy } = require("../controller/studyController");
 
 const router = express.Router();
 
-const {
-  addStudy,
-  updateStudy,
-  getStudybyId,
-  getAllStudyData,
-  deleteStudy,
-} = require("../controller/studyController");
-
-const upload = require("../middleware/uploadMiddleware");
-// const { imageValidator,imageValidationHandler } = require("../middleware/image/imageValidator");
-
-// get All Questions
 router.get("/", getAllStudyData);
-
-// get by Single Question
 router.get("/:id", getStudybyId);
-
-// post Question
-router.post("/add",upload,addStudy);
-
-// delete question
-router.delete("/delete/:id", deleteStudy);
-
-// update question
-router.put("/update/:id", upload,updateStudy);
+router.post("/add", Authenticate, Authorize("admin"), upload, addStudy);
+router.delete("/delete/:id", Authenticate, Authorize("admin"), deleteStudy);
+router.put("/update/:id", Authenticate, Authorize("admin"), upload, updateStudy);
 
 module.exports = router;

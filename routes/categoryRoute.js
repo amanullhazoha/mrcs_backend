@@ -1,41 +1,23 @@
-// external imports
 const express = require("express");
-const router = express.Router(); 
-
+const upload = require("../middleware/uploadMiddleware");
+const Authorize = require("../middleware/users/authorize");
+const Authenticate = require("../middleware/users/authenticate");
+const { categoryValidator, categoryValidationHandler } = require("../middleware/category/categoryValidator");
 const { 
   getCategory, 
   addCategory, 
   updateCategory, 
   deleteCategory,
   getSingleCategory,
- } =
-  require("../controller/categoryController");
-const { 
-  categoryValidator, 
-  categoryValidationHandler} = require("../middleware/category/categoryValidator");
-const upload = require("../middleware/uploadMiddleware");
+} = require("../controller/categoryController");
+  
+const router = express.Router(); 
 
-
-  // get Category 
 router.get("/",getCategory);
-
-// get by Single Category
 router.get("/:id",getSingleCategory); 
-
-// post Category 
-router.post("/add",
-  upload,
-  categoryValidator, 
-  categoryValidationHandler,
-  addCategory
-); 
- 
-
-// delete Category
-router.delete("/delete/:id",deleteCategory); 
-
-// update Category
-router.put("/update/:id",upload,updateCategory); 
+router.post("/add", Authenticate, Authorize("admin"), upload, categoryValidator, categoryValidationHandler, addCategory); 
+router.delete("/delete/:id", Authenticate, Authorize("admin"), deleteCategory); 
+router.put("/update/:id", Authenticate, Authorize("admin"), upload, updateCategory); 
 
 
 module.exports = router;

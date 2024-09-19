@@ -1,27 +1,18 @@
-// external imports
 const express = require("express");
+const Authorize = require("../middleware/users/authorize");
+const Authenticate = require("../middleware/users/authenticate");
+const {
+    addResult,
+    getAllResult,
+    getResultbyId,
+    getAllResult_BY_User,
+} = require("../controller/questionController");
 
 const router = express.Router();
 
-const {
-    addResult,
-    getResultbyId,
-    getAllResult_BY_User,
-    getAllResult
-} = require("../controller/questionController");
-
-
-
-// add result
-router.post("/add",addResult); 
-
-// get all result by userid 
-router.get("/:userId", getAllResult_BY_User);
-
-// get all result Data
 router.get("/", getAllResult);
-
-// get all result by userid 
+router.post("/add", Authenticate, addResult); 
+router.get("/:userId", getAllResult_BY_User);
 router.get("/singleresult/:id", getResultbyId);
 
 module.exports = router;

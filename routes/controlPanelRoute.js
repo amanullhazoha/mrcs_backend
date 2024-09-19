@@ -1,7 +1,6 @@
-// external imports
 const express = require("express");
-const router = express.Router();
-// internel imports
+const Authorize = require("../middleware/users/authorize");
+const Authenticate = require("../middleware/users/authenticate");
 const {
   getAllData,
   addControlPanel,
@@ -9,16 +8,11 @@ const {
   deleteControlPanel,
 } = require("../controller/controlPanel");
 
-const {
-  controlpanelValidator,
-  controlpanelValidationHandler,
-} = require("../middleware/controlpanel/controlpanelValidator");
-const upload = require("../middleware/uploadMiddleware");
+const router = express.Router();
 
-// get User API ....
 router.get("/", getAllData);
-router.post("/add", addControlPanel);
-router.put("/update/:id", updateControlPanel);
-router.delete("/delete/:id", deleteControlPanel);
+router.post("/add", Authenticate, Authorize("admin"), addControlPanel);
+router.put("/update/:id", Authenticate, Authorize("admin"), updateControlPanel);
+router.delete("/delete/:id", Authenticate, Authorize("admin"), deleteControlPanel);
 
 module.exports = router;

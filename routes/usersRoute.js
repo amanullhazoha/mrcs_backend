@@ -1,44 +1,31 @@
 const express = require("express");
+const upload = require("../middleware/uploadMiddleware");
+const Authorize = require("../middleware/users/authorize");
+const Authenticate = require("../middleware/users/authenticate");
+const { addUserValidators, addUserValidationHandler } = require("../middleware/users/userValidator");
 const {
-  getUsers,
-  getSingleUser,
   addUser,
+  getUsers,
   updateUser,
   deleteUser,
-  getLoginUserProfile
+  getSingleUser,
+  getLoginUserProfile,
+  loggedInUserProfileUpdate
 } = require("../controller/usersController");
-const upload = require("../middleware/uploadMiddleware");
-const Authenticate = require("../middleware/users/authenticate");
-
-const {
-  addUserValidators,
-  addUserValidationHandler,
-} = require("../middleware/users/userValidator");
 
 const router = express.Router();
 
-// get User API ....
-router.get("/", getUsers);
+router.get("/", Authenticate, Authorize("admin"), getUsers);
 
-//get Single User Api ...
 router.get("/profile", Authenticate, getLoginUserProfile);
+router.put("/profile/update", Authenticate, loggedInUserProfileUpdate);
 
-router.get("/:id", getSingleUser);
+router.get("/:id", Authenticate, Authorize("admin"), getSingleUser);
 
+router.post("/adduser", Authenticate, upload, addUserValidators, addUserValidationHandler, addUser);
 
-// add User API ......
-router.post(
-  "/adduser",
-  upload,
-  addUserValidators,
-  addUserValidationHandler,
-  addUser,
-);
+router.put("/update/:id", Authenticate, Authorize("admin"), upload, updateUser);
 
-// update User Api
-router.put("/update/:id", upload, updateUser);
-
-//delete User Api
-router.delete("/delete/:id", deleteUser);
+router.delete("/delete/:id", Authenticate, Authorize("admin"), deleteUser);
 
 module.exports = router;

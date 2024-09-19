@@ -1,32 +1,15 @@
-// external imports
 const express = require("express");
+const Authorize = require("../middleware/users/authorize");
+const Authenticate = require("../middleware/users/authenticate");
+const { sliderValidator, sliderValidationHandler} = require("../middleware/slider/SliderValidator");
+const { addSlider, deleteSlider, updateSlider, getSliderImageById, getAllSliderImages } = require("../controller/sliderController");
 
 const router = express.Router(); 
 
-const { sliderValidator, sliderValidationHandler} = require("../middleware/slider/SliderValidator");
-
-const { 
-    addSlider,
-    updateSlider,
-    getSliderImageById,
-    getAllSliderImages,
-    deleteSlider
-} = require("../controller/sliderController");
-
-// get slider 
-router.get("/",getAllSliderImages);
-
-// get by Single Slider
-router.get("/:id",getSliderImageById); 
-
-// post Slider 
-router.post("/add",addSlider ); 
-
-// delete Slider
-router.delete("/delete/:id",deleteSlider); 
-
-// update Slider
-router.put("/update/:id",updateSlider); 
-
+router.get("/", getAllSliderImages);
+router.get("/:id", Authenticate, Authorize("admin"), getSliderImageById); 
+router.post("/add", Authenticate, Authorize("admin"), addSlider); 
+router.delete("/delete/:id", Authenticate, Authorize("admin"), deleteSlider); 
+router.put("/update/:id", Authenticate, Authorize("admin"), updateSlider); 
 
 module.exports = router;

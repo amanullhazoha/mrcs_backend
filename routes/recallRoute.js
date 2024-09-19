@@ -1,32 +1,21 @@
-// external imports
 const express = require("express");
-
-const router = express.Router();
-
+const upload = require("../middleware/uploadMiddleware");
+const Authorize = require("../middleware/users/authorize");
+const Authenticate = require("../middleware/users/authenticate");
 const {
   addRecall,
   updateRecall,
+  deleteRecall,
   getRecallbyId,
   getAllRecallData,
-  deleteRecall,
 } = require("../controller/recallController");
 
-const upload = require("../middleware/uploadMiddleware");
-// const { imageValidator,imageValidationHandler } = require("../middleware/image/imageValidator");
+const router = express.Router();
 
-// get All Questions
 router.get("/", getAllRecallData);
-
-// get by Single Question
 router.get("/:id", getRecallbyId);
-
-// post Question
-router.post("/add", upload, addRecall);
-
-// delete question
-router.delete("/delete/:id", deleteRecall);
-
-// update question
-router.put("/update/:id", upload, updateRecall);
+router.post("/add", Authenticate, Authorize("admin"), upload, addRecall);
+router.delete("/delete/:id", Authenticate, Authorize("admin"), deleteRecall);
+router.put("/update/:id", Authenticate, Authorize("admin"), upload, updateRecall);
 
 module.exports = router;

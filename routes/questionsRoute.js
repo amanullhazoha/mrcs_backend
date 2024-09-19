@@ -1,37 +1,24 @@
 // external imports
 const express = require("express");
-
-const router = express.Router();
-
+const upload = require("../middleware/uploadMiddleware");
+const Authorize = require("../middleware/users/authorize");
+const Authenticate = require("../middleware/users/authenticate");
 const {
     addQuestion,
+    deleteQuestion,
     updateQuestion,
     getQuestionbyId,
     getAllQuestionData,
-    deleteQuestion,
     getAllQuestion_BY_Quiz,
 } = require("../controller/questionController");
 
-const upload = require("../middleware/uploadMiddleware");
-// const { imageValidator,imageValidationHandler } = require("../middleware/image/imageValidator");
+const router = express.Router();
 
-// get All Questions
 router.get("/", getAllQuestionData);
-
-// get All Question By Quiz name wise 
 router.get("/questionbyquiz", getAllQuestion_BY_Quiz);
-
-
-// get by Single Question
 router.get("/:id", getQuestionbyId);
-
-// post Question
-router.post("/add",upload,addQuestion);
-
-// delete question
-router.delete("/delete/:id", deleteQuestion);
-
-// update question
-router.put("/update/:id", upload,updateQuestion);
+router.post("/add", Authenticate, Authorize("admin"), upload, addQuestion);
+router.delete("/delete/:id", Authenticate, Authorize("admin"), deleteQuestion);
+router.put("/update/:id", Authenticate, Authorize("admin"), upload, updateQuestion);
 
 module.exports = router;

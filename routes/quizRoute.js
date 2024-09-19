@@ -1,8 +1,8 @@
-// external imports
 const express = require("express");
-
-const router = express.Router();
-
+const upload = require("../middleware/uploadMiddleware");
+const Authorize = require("../middleware/users/authorize");
+const Authenticate = require("../middleware/users/authenticate");
+const { quizValidator, quizValidationHandler } = require("../middleware/quiz/quizValidation");
 const {
   getQuiz,
   addQuiz,
@@ -11,32 +11,14 @@ const {
   getSingleQuiz,
   getCategory_NameWise_AllQuiz,
 } = require("../controller/quizController");
-const {
-  quizValidator,
-  quizValidationHandler,
-} = require("../middleware/quiz/quizValidation");
-const upload = require("../middleware/uploadMiddleware");
-// get Image
+
+const router = express.Router();
+
 router.get("/", getQuiz);
-
-//get All quiz by Category Wise
 router.get("/quizbycategory", getCategory_NameWise_AllQuiz);
-
-// get by Single Image
 router.get("/:id", getSingleQuiz);
-
-// post Image
-router.post("/add", 
-    upload,
-    quizValidator,
-    quizValidationHandler,
-    addQuiz
-  );
-
-// delete Image
-router.delete("/delete/:id", deleteQuiz);
-
-// update Image
-router.put("/update/:id", upload,updateQuiz);
+router.post("/add", Authenticate, Authorize("admin"), upload, quizValidator, quizValidationHandler, addQuiz);
+router.delete("/delete/:id", Authenticate, Authorize("admin"), deleteQuiz);
+router.put("/update/:id", Authenticate, Authorize("admin"), upload, updateQuiz);
 
 module.exports = router;
