@@ -23,7 +23,7 @@ const getQuiz = async (req, res, next) => {
 const getCategory_NameWise_AllQuiz = async (req, res, next) => {
   const categoryName = req.query.category; // retrieve category name from query parameter
   const status = "active";
-  console.log("Category", categoryName);
+  
   try {
     if (!categoryName) {
       return res.status(400).json({

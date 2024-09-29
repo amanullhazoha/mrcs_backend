@@ -8,11 +8,13 @@ const {
   deleteRecall,
   getRecallbyId,
   getAllRecallData,
+  getCategory_NameWise_AllRecall
 } = require("../controller/recallController");
 
 const router = express.Router();
 
 router.get("/", getAllRecallData);
+router.get("/recallbycategory", getCategory_NameWise_AllRecall);
 router.get("/:id", getRecallbyId);
 router.post("/add", Authenticate, Authorize("admin"), upload, addRecall);
 router.delete("/delete/:id", Authenticate, Authorize("admin"), deleteRecall);

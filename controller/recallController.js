@@ -145,6 +145,48 @@ const getAllRecallData = async (req, res) => {
   }
 };
 
+const getCategory_NameWise_AllRecall = async (req, res, next) => {
+  const categoryName = req.query.category; // retrieve category name from query parameter
+  const status = "active";
+  
+  try {
+    if (!categoryName) {
+      return res.status(400).json({
+        errors: {
+          common: {
+            msg: `Category name is required in the query parameter!`,
+          },
+        },
+      });
+    }
+
+    const recall = await Recall.find({
+      category: categoryName,
+      quiz_status: status,
+    })
+      .sort({ updatedAt: -1 })
+      .exec();
+    if (!recall || recall.length === 0) {
+      return res.status(404).json({
+        errors: {
+          common: {
+            msg: `No quiz found for category ${categoryName}!`,
+          },
+        },
+      });
+    }
+    res.json(recall);
+  } catch (err) {
+    return res.status(500).json({
+      errors: {
+        common: {
+          msg: `Unknown error occurred! ===> ${err}`,
+        },
+      },
+    });
+  }
+};
+
 const getRecallbyId = async (req, res) => {
   const { id } = req.params;
 
@@ -191,4 +233,5 @@ module.exports = {
   getAllRecallData,
   deleteRecall,
   uploadMiddleware,
+  getCategory_NameWise_AllRecall
 };
