@@ -1,4 +1,6 @@
 const multer = require("multer");
+const User = require("../models/People");
+const Quiz = require("../models/QuizSchema");
 const Question = require("../models/QuestionSchema");
 const Result = require("../models/ResultSchema");
 
@@ -118,7 +120,9 @@ const getAllQuestionData = async (req, res) => {
 };
 
 const getAllQuestion_BY_Quiz = async (req, res, next) => {
-  const quizName = req.query.quiz; // retrieve category name from query parameter
+  const quizName = req.query.quiz;
+  const userId = req?.user?.id;
+
   try {
     if (!quizName) {
       return res.status(400).json({
@@ -129,6 +133,26 @@ const getAllQuestion_BY_Quiz = async (req, res, next) => {
         },
       });
     }
+
+    const user = await User.findById(userId);
+
+    const quiz = await Quiz.findOne({ quiz_name: quizName });
+
+    
+    if((user?.usertype === "unpaid") && (quiz?.accessibility === "paid")) {
+      console.log("hi")
+      
+      return res.status(404).json({
+        errors: {
+          common: {
+            msg: `No Question access for this Quiz ${quizName}!`,
+          },
+        },
+      });
+    } 
+
+    console.log(quiz, "quiz");
+
     const questionAll = await Question.find({ quizname: quizName }, "-answer")
       .sort({ updatedAt: -1 })
 

@@ -28,6 +28,15 @@ const recallSchema = new mongoose.Schema(
     recall_description: {
       type: String,
     },
+    accessibility: {
+      type: String,
+      default: "unpaid",
+      enum: ["paid", "unpaid"],
+    },
+    category: {
+      type: String,
+      required: [true, "Please provide category name"],
+    },
     status: {
       type: String,
       required: true,

@@ -9,6 +9,7 @@ const {
   deleteReview,
   getShowReview,
   getSingleReview,
+  addReviewForAdmin,
   getLoggedInUserReview
 } = require("../controller/reviewController");
 
@@ -21,6 +22,7 @@ router.get("/logged-in-user", Authenticate, getLoggedInUserReview);
 router.get("/:id", Authenticate, Authorize("admin"), getSingleReview);
 
 router.post("/add", Authenticate, addReview);
+router.post("/admin-add", Authenticate, Authorize("admin"), upload, addReviewForAdmin);
 router.put("/update/:id", Authenticate, Authorize("admin"), upload, updateReview);
 
 router.delete("/delete/:id", Authenticate, Authorize("admin"), deleteReview);

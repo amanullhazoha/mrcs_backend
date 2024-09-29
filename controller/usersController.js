@@ -1,4 +1,3 @@
-//external Import
 const bcrypt = require("bcrypt");
 const User = require("../models/People");
 const cloudinary = require("cloudinary").v2;

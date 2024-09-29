@@ -15,7 +15,7 @@ const {
 const router = express.Router();
 
 router.get("/", getAllQuestionData);
-router.get("/questionbyquiz", getAllQuestion_BY_Quiz);
+router.get("/questionbyquiz", Authenticate, getAllQuestion_BY_Quiz);
 router.get("/:id", getQuestionbyId);
 router.post("/add", Authenticate, Authorize("admin"), upload, addQuestion);
 router.delete("/delete/:id", Authenticate, Authorize("admin"), deleteQuestion);

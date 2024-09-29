@@ -22,7 +22,6 @@ const peopleSchema = mongoose.Schema(
       default: "user",
       enum: ["user", "admin", "superadmin"],
     },
-
     usertype: {
       type: String,
       default: "unpaid",

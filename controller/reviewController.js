@@ -1,4 +1,7 @@
 const Review = require("../models/ReviewSchema");
+const User = require("../models/People");
+const cloudinary = require("cloudinary").v2;
+require("dotenv").config();
 
 // get All faq Api
 const getReview = async (req, res, next) => {
@@ -72,15 +75,75 @@ const addReview = async (req, res) => {
   try {
     const { rating, review,  } = req.body;
     const userId = req?.user?.id;
+
+    const user = await User.findById(userId);
     
     const newReview = new Review({
       userId,
       rating,
       review,
+      user_name: user?.name,
+      user_profile_image: user?.profile
     });
 
     await newReview.save();
     res.status(201).json({ success: true, data: newReview });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+const addReviewForAdmin = async (req, res) => {
+  try {
+    const { rating, review, user_name, status } = req.body;
+    const userId = req?.user?.id;
+
+    const user = await User.findById(userId);
+
+    if (req.file) {
+      cloudinary.uploader.upload(req.file.path, async (err, result) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            success: false,
+            message: "Image upload failed",
+          });
+        }
+
+        const newReview = new Review({
+          userId,
+          rating,
+          review,
+          status,
+          user_name,
+          publicid: result.public_id,
+          user_profile_image: result.secure_url
+        });
+    
+        await newReview.save();
+
+        return res.status(201).json({
+          success: true,
+          message: "Review add successfully!",
+        });
+      });
+    } else {
+      const newReview = new Review({
+        userId,
+        rating,
+        review,
+        status,
+        user_name,
+        user_profile_image: user?.profile
+      });
+  
+      await newReview.save();
+
+      return res.status(201).json({
+        success: true,
+        message: "Review add successfully!",
+      });
+    }
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -103,10 +166,40 @@ const updateReview = async (req, res, next) => {
     reviewData.review = review;
     reviewData.status = status;
 
-    await reviewData.save();
+    if (req.file) {
+      if (reviewData?.publicid) {
+        await cloudinary.uploader.destroy(reviewData?.publicid);
+      }
 
-    res.status(200).json({ success: true, data: reviewData });
+      cloudinary.uploader.upload(req.file.path, async (err, result) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            success: false,
+            message: "Image upload failed",
+          });
+        }
+
+        reviewData.user_profile_image = result.secure_url;
+        reviewData.publicid = result.public_id;
+
+        await reviewData.save();
+
+        return res.status(200).json({
+          success: true,
+          message: "Review updated successfully!",
+        });
+      });
+    } else {
+      await reviewData.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "Review updated successfully!",
+      });
+    }
   } catch (error) {
+    console.log(error)
     res.status(500).json({ success: false, error: error.message });
   }
 };
@@ -136,5 +229,6 @@ module.exports = {
     deleteReview,
     getShowReview,
     getSingleReview,
+    addReviewForAdmin,
     getLoggedInUserReview
 };

@@ -27,6 +27,7 @@ const cloudinaryUpload = util.promisify(cloudinary.uploader.upload);
 const addRecall = async (req, res) => {
   try {
     const {
+      category,
       recall_name,
       recall_title,
       text1,
@@ -35,9 +36,11 @@ const addRecall = async (req, res) => {
       recall_description,
       link,
       status,
+      accessibility
     } = req.body;
 
     const newRecall = new Recall({
+      category,
       recall_name,
       recall_title,
       text1,
@@ -46,6 +49,7 @@ const addRecall = async (req, res) => {
       link,
       recall_description,
       status,
+      accessibility
     });
 
     if (req.file) {
@@ -80,6 +84,8 @@ const updateRecall = async (req, res) => {
       recall_description,
       link,
       status,
+      category,
+      accessibility
     } = req.body;
     const { id } = req.params;
 
@@ -100,6 +106,8 @@ const updateRecall = async (req, res) => {
       "recall_description",
       "link",
       "status",
+      "category",
+      "accessibility"
     ]) {
       recall[prop] = req.body[prop];
     }

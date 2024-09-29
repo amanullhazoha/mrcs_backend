@@ -12,6 +12,9 @@ const reviewSchema = new mongoose.Schema(
     user_name: {
       type: String,
     },
+    publicid: {
+      type: String,
+    },
     rating: {
         type: Number,
     },

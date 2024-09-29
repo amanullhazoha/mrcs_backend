@@ -8,8 +8,10 @@ const session = require("express-session");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const request = require("request");
+const cron = require('node-cron');
 // Internal Imports ....
 const connectDB = require("./db");
+const User = require("./models/People");
 const {
   notFoundHandler,
   errorHandler,
@@ -24,6 +26,7 @@ const home = require("./routes/homeRoute");
 const auth = require("./routes/loginRoute");
 const users = require("./routes/usersRoute");
 const category = require("./routes/categoryRoute");
+const recallCategory = require("./routes/recallCategoryRoute");
 const quiz = require("./routes/quizRoute");
 const slider = require("./routes/sliderRoute");
 const tags = require("./routes/tagsRoute");
@@ -41,7 +44,7 @@ const contactUs = require("./routes/contactUsRoute")
 //config .......
 const app = express();
 const corsOptions = {
-  origin: ['http://localhost:3000', 'http://localhost:5174'], 
+  origin: ['http://localhost:3000', 'http://localhost:5173'], 
   credentials: true,
 };
 app.use(cors(corsOptions));
@@ -65,12 +68,37 @@ app.use(
   }),
 );
 
+cron.schedule('0 0 * * *', async () => {
+  try {
+    const users = await User.find();
+    const currentDate = new Date();
+
+    for (const user of users) {
+      if(user?.planExpiryDate && user?.usertype === "paid") {
+        const endDate = new Date(user.planExpiryDate);
+  
+        if (endDate < currentDate) {
+          await User.findByIdAndUpdate(user._id, {
+            usertype: "unpaid",
+            planExpiryDate: null,
+          });
+
+          console.log(`Subscription ${user._id} has expired.`);
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error occurred while updating task:', error);
+  }
+});
+
 // Routing Setup .........
 app.use("/", home);
 app.use("/api", auth);
 app.use("/api/faq", faq);
 app.use("/api/users", users);
 app.use("/api/category", category);
+app.use("/api/recall-category", recallCategory);
 app.use("/api/slider", slider);
 app.use("/api/quiz", quiz);
 app.use("/api/questions", questions);
