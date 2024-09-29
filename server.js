@@ -44,7 +44,7 @@ const contactUs = require("./routes/contactUsRoute")
 //config .......
 const app = express();
 const corsOptions = {
-  origin: ['http://localhost:3000', 'http://localhost:5173'], 
+  origin: ['https://admin.mrcsaid.com', 'https://mrcsaid.com'], 
   credentials: true,
 };
 app.use(cors(corsOptions));
