@@ -26,7 +26,7 @@ const cloudinaryUpload = util.promisify(cloudinary.uploader.upload);
 
 const addStudy = async (req, res) => {
   try {
-    const { study_name, study_title, text1, text2, text3, study_description, link, status } = req.body;
+    const { study_name, study_title, text1, text2, text3, study_description, link, status, accessibility } = req.body;
 
     const newStudy = new Study({
       study_name,
@@ -35,6 +35,7 @@ const addStudy = async (req, res) => {
       text2,
       text3,
       link,
+      accessibility,
       study_description,
       status
     });
@@ -69,7 +70,7 @@ const updateStudy = async (req, res) => {
       return res.status(404).json({ success: false, error: "Study not found" });
     }
 
-    for (const prop of ['study_name', 'study_title', 'text1', 'text2', 'text3', 'study_description', 'link', 'status']) {
+    for (const prop of ['study_name', 'study_title', 'text1', 'text2', 'text3', 'study_description', 'link', 'status', "accessibility"]) {
       study[prop] = req.body[prop];
     }
 

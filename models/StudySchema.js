@@ -4,7 +4,6 @@ const studySchema = new mongoose.Schema({
   study_name:{
     type:String,
     required:[true,"Please provide Study Name"]
-
   },
   study_title:{
     type:String,
@@ -18,7 +17,11 @@ const studySchema = new mongoose.Schema({
   text3:{
     type:String,
   },
-  
+  accessibility: {
+    type: String,
+    default: "unpaid",
+    enum: ["paid", "unpaid"],
+  },
   image: {
     type: String,
   },
