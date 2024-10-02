@@ -18,7 +18,7 @@ const login = async (req, res, next) => {
 
     const isValidPassword = await bcrypt.compare(
       req.body.password,
-      user.password,
+      user.password
     );
     if (!isValidPassword) {
       return res.status(401).json({
@@ -46,11 +46,17 @@ const login = async (req, res, next) => {
     //   signed: true,
     // });
 
+    const domain =
+      req.headers.origin === "https://mrcsaid.com"
+        ? "mrcsaid.com"
+        : "admin.mrcsaid.com";
+
     res.cookie(process.env.COOKIE_NAME, token, {
       httpOnly: true,
       signed: true,
-      secure: false,
-      sameSite: 'Lax',
+      secure: true,
+      sameSite: "None",
+      domain: domain,
     });
 
     res.locals.loggedInUser = payload;
