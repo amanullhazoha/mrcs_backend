@@ -46,10 +46,9 @@ const login = async (req, res, next) => {
     //   signed: true,
     // });
 
-    const domain =
-      req.headers.origin === "https://mrcsaid.com"
-        ? "mrcsaid.com"
-        : "admin.mrcsaid.com";
+    const domain = req.headers.origin.includes("mrcsaid.com")
+      ? "mrcsaid.com"
+      : "admin.mrcsaid.com";
 
     res.cookie(process.env.COOKIE_NAME, token, {
       httpOnly: true,
