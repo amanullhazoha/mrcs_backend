@@ -55,7 +55,7 @@ const login = async (req, res, next) => {
       signed: true,
       secure: true,
       sameSite: "None",
-      domain: domain,
+      domain: "mrcsaid.com",
     });
 
     res.locals.loggedInUser = payload;
