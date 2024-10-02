@@ -46,16 +46,16 @@ const login = async (req, res, next) => {
     //   signed: true,
     // });
 
-    const domain = req.headers.origin.includes("mrcsaid.com")
-      ? "mrcsaid.com"
-      : "admin.mrcsaid.com";
+    const domain = req.headers.origin.includes("admin.mrcsaid.com")
+      ? ".mrcsaid.com"
+      : ".mrcsaid.com"; // Set domain for main site
 
     res.cookie(process.env.COOKIE_NAME, token, {
       httpOnly: true,
       signed: true,
       secure: true,
       sameSite: "None",
-      domain: "mrcsaid.com",
+      domain: domain,
     });
 
     res.locals.loggedInUser = payload;
