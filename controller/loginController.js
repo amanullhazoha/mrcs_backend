@@ -47,8 +47,8 @@ const login = async (req, res, next) => {
     // });
 
     const domain = req.headers.origin.includes("admin.mrcsaid.com")
-      ? ".mrcsaid.com"
-      : ".mrcsaid.com"; // Set domain for main site
+      ? "admin.mrcsaid.com"
+      : "mrcsaid.com";
 
     res.cookie(process.env.COOKIE_NAME, token, {
       httpOnly: true,
