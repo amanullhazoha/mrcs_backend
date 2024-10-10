@@ -13,9 +13,9 @@ module.exports = () => {
       token = req.signedCookies[process.env.COOKIE_NAME];
     }
 
-    // if (req && req?.headers?.authorization) {
-    //   token = req.headers?.authorization?.replace("Bearer ", "");
-    // }
+    if (req && req?.headers?.authorization) {
+      token = req.headers?.authorization?.replace("Bearer ", "");
+    }
 
     return token;
   };
