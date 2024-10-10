@@ -8,7 +8,7 @@ const session = require("express-session");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const request = require("request");
-const cron = require('node-cron');
+const cron = require("node-cron");
 // Internal Imports ....
 const connectDB = require("./db");
 const User = require("./models/People");
@@ -39,12 +39,17 @@ const review = require("./routes/reviewRoute");
 const subscription = require("./routes/subscriptionRoute");
 const controlpanel = require("./routes/controlPanelRoute");
 const forgotpassword = require("./routes/forgot_password_Route");
-const contactUs = require("./routes/contactUsRoute")
+const contactUs = require("./routes/contactUsRoute");
 
 //config .......
 const app = express();
 const corsOptions = {
-  origin: ['https://admin.mrcsaid.com', 'https://mrcsaid.com'], 
+  origin: [
+    "https://admin.mrcsaid.com",
+    "https://mrcsaid.com",
+    "http://localhost:5173",
+    "http://localhost:3000",
+  ],
   credentials: true,
 };
 app.use(cors(corsOptions));
@@ -65,18 +70,18 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false },
-  }),
+  })
 );
 
-cron.schedule('0 0 * * *', async () => {
+cron.schedule("0 0 * * *", async () => {
   try {
     const users = await User.find();
     const currentDate = new Date();
 
     for (const user of users) {
-      if(user?.planExpiryDate && user?.usertype === "paid") {
+      if (user?.planExpiryDate && user?.usertype === "paid") {
         const endDate = new Date(user.planExpiryDate);
-  
+
         if (endDate < currentDate) {
           await User.findByIdAndUpdate(user._id, {
             usertype: "unpaid",
@@ -88,7 +93,7 @@ cron.schedule('0 0 * * *', async () => {
       }
     }
   } catch (error) {
-    console.error('Error occurred while updating task:', error);
+    console.error("Error occurred while updating task:", error);
   }
 });
 
