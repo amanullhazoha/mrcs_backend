@@ -25,6 +25,18 @@ const getUsers = async (req, res, next) => {
 const getSingleUser = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
+
+    if (!user)
+      return res.status(404).json({
+        errors: {
+          common: {
+            msg: `User not found by ID`,
+          },
+        },
+      });
+
+    user.password = "";
+
     res.json(user);
   } catch (err) {
     return res.status(500).json({
@@ -39,7 +51,7 @@ const getSingleUser = async (req, res, next) => {
 
 const getLoginUserProfile = async (req, res, next) => {
   try {
-    const id = req?.user?.id
+    const id = req?.user?.id;
     const user = await User.findById(id);
 
     res.json(user);
@@ -54,9 +66,9 @@ const getLoginUserProfile = async (req, res, next) => {
   }
 };
 
-async function loggedInUserProfileUpdate (req, res, next) {
+async function loggedInUserProfileUpdate(req, res, next) {
   try {
-    const id = req?.user?.id
+    const id = req?.user?.id;
     const user = await User.findById(id);
 
     if (!user) {
@@ -135,6 +147,7 @@ async function addUser(req, res, next) {
   try {
     let newUser;
     const hashPassword = await bcrypt.hash(req.body.password, 6);
+
     newUser = new User({
       ...req.body,
       password: hashPassword,
@@ -200,11 +213,11 @@ async function updateUser(req, res, next) {
     user.role = req.body.role || user.role;
     user.planExpiryDate = req.body.planExpiryDate || user.planExpiryDate;
 
-    if((req.body.usertype  === "paid") && (req.body.usertype !== user.usertype)) {
+    if (req.body.usertype === "paid" && req.body.usertype !== user.usertype) {
       const now = new Date();
 
       user.planExpiryDate = now.setDate(now.getDate() + 90);
-    } else if (req.body.usertype  === "unpaid") {
+    } else if (req.body.usertype === "unpaid") {
       user.planExpiryDate = null;
     }
 
@@ -279,5 +292,5 @@ module.exports = {
   updateUser,
   getSingleUser,
   getLoginUserProfile,
-  loggedInUserProfileUpdate
+  loggedInUserProfileUpdate,
 };

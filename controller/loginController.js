@@ -60,8 +60,6 @@ const login = async (req, res, next) => {
 
     res.locals.loggedInUser = payload;
 
-    console.log("Cookie Set:", res.getHeader("Set-Cookie"));
-
     const now = new Date();
     await User.findByIdAndUpdate(user._id, { lastActivity: now });
 

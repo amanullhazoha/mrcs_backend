@@ -9,9 +9,9 @@ module.exports = () => {
 
     console.log(req.headers?.authorization);
 
-    if (req && req.signedCookies) {
-      token = req.signedCookies[process.env.COOKIE_NAME];
-    }
+    // if (req && req.signedCookies) {
+    //   token = req.signedCookies[process.env.COOKIE_NAME];
+    // }
 
     if (req && req?.headers?.authorization) {
       token = req.headers?.authorization?.replace("Bearer ", "");

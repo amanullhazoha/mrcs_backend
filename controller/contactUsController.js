@@ -1,12 +1,12 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: "mail.mrcsaid.com",
-  port: 465,
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
   secure: true,
   auth: {
-    user: "contact@mrcsaid.com",
-    pass: "Surgeon2023#",
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASSWORD,
   },
 });
 
@@ -15,8 +15,8 @@ const contactUs = async (req, res) => {
 
   try {
     const mailOptions = {
-      from: "contact@mrcsaid.com",
-      to: "contact@mrcsaid.com",
+      from: process.env.SMTP_USER,
+      to: process.env.SMTP_USER,
       subject: "Send a contact message",
       text: `<div>
         <h1>Name: ${full_name}</h1>
