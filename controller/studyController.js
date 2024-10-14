@@ -3,7 +3,7 @@ const Study = require("../models/StudySchema");
 const cloudinary = require("cloudinary").v2;
 require("dotenv").config();
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const util = require('util');
+const util = require("util");
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
@@ -26,7 +26,17 @@ const cloudinaryUpload = util.promisify(cloudinary.uploader.upload);
 
 const addStudy = async (req, res) => {
   try {
-    const { study_name, study_title, text1, text2, text3, study_description, link, status, accessibility } = req.body;
+    const {
+      study_name,
+      study_title,
+      text1,
+      text2,
+      text3,
+      study_description,
+      link,
+      status,
+      accessibility,
+    } = req.body;
 
     const newStudy = new Study({
       study_name,
@@ -37,7 +47,7 @@ const addStudy = async (req, res) => {
       link,
       accessibility,
       study_description,
-      status
+      status,
     });
 
     if (req.file) {
@@ -47,7 +57,9 @@ const addStudy = async (req, res) => {
         newStudy.publicid = result.public_id;
       } catch (error) {
         console.error("Image upload failed:", error);
-        return res.status(500).json({ success: false, error: "Image upload failed" });
+        return res
+          .status(500)
+          .json({ success: false, error: "Image upload failed" });
       }
     }
 
@@ -61,7 +73,16 @@ const addStudy = async (req, res) => {
 
 const updateStudy = async (req, res) => {
   try {
-    const { study_name, study_title, text1, text2, text3, study_description, link, status } = req.body;
+    const {
+      study_name,
+      study_title,
+      text1,
+      text2,
+      text3,
+      study_description,
+      link,
+      status,
+    } = req.body;
     const { id } = req.params;
 
     const study = await Study.findById(id);
@@ -70,7 +91,17 @@ const updateStudy = async (req, res) => {
       return res.status(404).json({ success: false, error: "Study not found" });
     }
 
-    for (const prop of ['study_name', 'study_title', 'text1', 'text2', 'text3', 'study_description', 'link', 'status', "accessibility"]) {
+    for (const prop of [
+      "study_name",
+      "study_title",
+      "text1",
+      "text2",
+      "text3",
+      "study_description",
+      "link",
+      "status",
+      "accessibility",
+    ]) {
       study[prop] = req.body[prop];
     }
 
@@ -81,7 +112,9 @@ const updateStudy = async (req, res) => {
         study.publicid = result.public_id;
       } catch (error) {
         console.error("Image upload failed:", error);
-        return res.status(500).json({ success: false, error: "Image upload failed" });
+        return res
+          .status(500)
+          .json({ success: false, error: "Image upload failed" });
       }
     }
 
@@ -95,11 +128,15 @@ const updateStudy = async (req, res) => {
 
 const getAllStudyData = async (req, res) => {
   try {
-    const studyData = await Study.find().sort({ updatedAt: -1 }).exec();
+    const studyData = await Study.find()
+      .sort({ accessibility: -1, updatedAt: -1 })
+      .exec();
     res.status(200).json(studyData);
   } catch (error) {
     console.error("Error retrieving study data:", error);
-    res.status(500).json({ error: "An error occurred while retrieving study data" });
+    res
+      .status(500)
+      .json({ error: "An error occurred while retrieving study data" });
   }
 };
 
@@ -115,7 +152,9 @@ const getStudybyId = async (req, res) => {
     }
   } catch (error) {
     console.error("Error retrieving study data by ID:", error);
-    res.status(500).json({ error: "An error occurred while retrieving study data" });
+    res
+      .status(500)
+      .json({ error: "An error occurred while retrieving study data" });
   }
 };
 
