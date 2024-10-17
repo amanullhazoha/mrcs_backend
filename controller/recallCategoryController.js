@@ -4,7 +4,9 @@ const upload = require("../middleware/uploadMiddleware");
 
 const getRecallCategory = async (req, res, next) => {
   try {
-    const recallCategory = await RecallCategory.find().sort({ updatedAt: -1 }).exec();
+    const recallCategory = await RecallCategory.find()
+      .sort({ updatedAt: -1 })
+      .exec();
 
     res.json(recallCategory);
   } catch (err) {
@@ -35,6 +37,8 @@ const getSingleRecallCategory = async (req, res, next) => {
 };
 
 const addRecallCategory = async (req, res) => {
+  console.log(req);
+
   try {
     const { cat_name, cat_status, create_date } = req.body;
 
@@ -62,6 +66,7 @@ const addRecallCategory = async (req, res) => {
       res.status(200).json({ success: true, data: newRecallCategory });
     }
   } catch (error) {
+    console.log(error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
@@ -133,15 +138,17 @@ const deleteRecallCategory = async (req, res, next) => {
         }
       );
     } else {
-      res.status(200).json({ message: "Recall category data deleted successfully" });
+      res
+        .status(200)
+        .json({ message: "Recall category data deleted successfully" });
     }
   });
 };
 
 module.exports = {
-    getRecallCategory,
-    addRecallCategory,
-    updateRecallCategory,
-    deleteRecallCategory,
-    getSingleRecallCategory,
+  getRecallCategory,
+  addRecallCategory,
+  updateRecallCategory,
+  deleteRecallCategory,
+  getSingleRecallCategory,
 };

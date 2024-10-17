@@ -28,6 +28,8 @@ const upload = multer({
 
 // Handle POST request to upload image and store image URL in database
 const addSlider = async (req, res) => {
+  console.log(req.body, req.file);
+
   try {
     upload(req, res, async function (err) {
       if (err) {
@@ -50,8 +52,8 @@ const addSlider = async (req, res) => {
               .status(500)
               .json({ error: "Failed to upload image to Cloudinary" });
           }
-          
-          newSlider.imageUrl = result.secure_url; 
+
+          newSlider.imageUrl = result.secure_url;
           newSlider.public_id = result.public_id;
 
           // Save image URL and status to MongoDB
@@ -62,17 +64,17 @@ const addSlider = async (req, res) => {
             imageUrl: newSlider.imageUrl,
             status: newSlider.status,
             text: newSlider.text,
-            link: newSlider.link,  // Fixed this line
+            link: newSlider.link, // Fixed this line
           });
         });
       } else {
-        await newSlider.save(); 
+        await newSlider.save();
         res.status(200).json({
           message: "Slider uploaded successfully!",
           imageUrl: newSlider.imageUrl,
           status: newSlider.status,
           text: newSlider.text,
-          link: newSlider.link,  // Fixed this line
+          link: newSlider.link, // Fixed this line
         });
       }
     });
@@ -80,7 +82,6 @@ const addSlider = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
-
 
 // Handle PUT request to update a slider image
 const updateSlider = (req, res) => {

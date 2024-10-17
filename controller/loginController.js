@@ -34,28 +34,8 @@ const login = async (req, res, next) => {
       mobile: user.mobile,
     };
 
-    // Generate JWT
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRY,
-    });
-
-    // Set JWT as cookie
-    // res.cookie(process.env.COOKIE_NAME, token, {
-    //   maxAge: process.env.JWT_EXPIRY,
-    //   httpOnly: true,
-    //   signed: true,
-    // });
-
-    const domain = req.headers.origin.includes("admin.mrcsaid.com")
-      ? "admin.mrcsaid.com"
-      : "mrcsaid.com";
-
-    res.cookie(process.env.COOKIE_NAME, token, {
-      httpOnly: true,
-      signed: true,
-      secure: true,
-      sameSite: "None",
-      // domain: domain,
     });
 
     res.locals.loggedInUser = payload;
