@@ -2,6 +2,7 @@ const { v4: uuidv4 } = require("uuid");
 const nodemailer = require("nodemailer");
 const User = require("../models/People");
 const crypto = require("crypto");
+const bcrypt = require("bcrypt");
 
 const transporter = nodemailer.createTransport({
   host: "mail.mrcsaid.com",
@@ -21,9 +22,7 @@ const forgotPassword = async (req, res) => {
     if (!user) {
       return res.status(404).send("This User does not exist");
     }
-    console.log("email", email);
     const resetToken = crypto.randomBytes(20).toString("hex");
-    console.log("reset token ", resetToken);
 
     user.resetToken = resetToken;
     await user.save();
@@ -58,7 +57,10 @@ const resetPassword = async (req, res) => {
     if (!user) {
       return res.status(404).send("User does not exist");
     }
-    user.password = newPassword;
+    const hashPassword = await bcrypt.hash(newPassword, 6);
+
+    user.password = hashPassword;
+
     user.resetToken = undefined;
     await user.save();
     res.status(200).send("Password reset successfully");
