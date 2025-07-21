@@ -36,8 +36,8 @@ const getCategory_NameWise_AllQuiz = async (req, res, next) => {
     }
 
     const quiz = await Quiz.find({
-      category: categoryName,
-      //   category: { $regex: new RegExp('\\b' + categoryName + '\\b', 'i') },
+      //   category: categoryName,
+      category: { $regex: new RegExp("\\b" + categoryName + "\\b", "i") },
       quiz_status: status,
     })
       .sort({ updatedAt: -1 })
