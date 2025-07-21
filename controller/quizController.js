@@ -23,7 +23,7 @@ const getQuiz = async (req, res, next) => {
 const getCategory_NameWise_AllQuiz = async (req, res, next) => {
   const categoryName = req.query.category; // retrieve category name from query parameter
   const status = "active";
-  
+
   try {
     if (!categoryName) {
       return res.status(400).json({
@@ -37,6 +37,7 @@ const getCategory_NameWise_AllQuiz = async (req, res, next) => {
 
     const quiz = await Quiz.find({
       category: categoryName,
+      //   category: { $regex: new RegExp('\\b' + categoryName + '\\b', 'i') },
       quiz_status: status,
     })
       .sort({ updatedAt: -1 })
