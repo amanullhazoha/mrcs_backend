@@ -182,17 +182,29 @@ const contactUs = require("./routes/contactUsRoute");
 
 //config .......
 const app = express();
+const allowedOrigins = [
+  "https://admin.mrcsaid.com",
+  "https://mrcsaid.com",
+  "http://localhost:5173",
+  "http://localhost:3000",
+];
+
 const corsOptions = {
-  origin: [
-    "https://admin.mrcsaid.com",
-    "https://mrcsaid.com",
-    "http://localhost:5173",
-    "http://localhost:3000",
-  ],
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS: " + origin));
+    }
+  },
   credentials: true,
 };
 
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 dotenv.config();
 const server = http.createServer(app);
